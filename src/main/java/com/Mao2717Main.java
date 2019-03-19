@@ -3,6 +3,7 @@ package com;
 
 import com.okhttp.CallBackUtil;
 import com.okhttp.OkhttpUtil;
+import com.utils.DownloadUtils;
 import com.utils.ThreadPoolUtil;
 import okhttp3.Call;
 import org.jsoup.Jsoup;
@@ -28,7 +29,7 @@ public class Mao2717Main {
         List<String> summaryList = getSummaryList(url);
         summaryList = summaryList.subList(69, summaryList.size() - 1);
         System.out.println("获取到 " + summaryList.size() + " 张图片");
-        downloadImage("mao2717", summaryList);
+        DownloadUtils.downloadImageSyn("mao2717", summaryList);
     }
 
     private static List<String> getSummaryList(String url) {
@@ -41,11 +42,9 @@ public class Mao2717Main {
                 String href = element.select("a").attr("href");
 
                 String detailUrl = BASE_URL + href;
-
                 List<String> detailImageList = getDetailImageList(detailUrl);
                 imageList.addAll(detailImageList);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -81,32 +80,6 @@ public class Mao2717Main {
         }
 
         return imgList;
-    }
-
-    private static void downloadImage(String filePath, List<String> imageList) {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            boolean mkdirs = file.mkdirs();
-        }
-
-        if (imageList.size() <= 0) return;
-
-        String imgUrl = imageList.get(0);
-        String iconName = System.currentTimeMillis() + new Random().nextInt(100) + ".jpg";
-
-        OkhttpUtil.okHttpDownloadFile(imgUrl, new CallBackUtil.CallBackFile(file.getAbsolutePath(), iconName) {
-            @Override
-            public void onFailure(Call call, Exception e) {
-            }
-
-            @Override
-            public void onResponse(File response) {
-                System.out.println(response.getAbsolutePath() + " 下载成功," + imageList.size());
-                imageList.remove(0);
-                downloadImage(filePath, imageList);
-            }
-        });
-
     }
 
 }
