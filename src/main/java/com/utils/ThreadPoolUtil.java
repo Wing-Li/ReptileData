@@ -30,7 +30,6 @@ public class ThreadPoolUtil {
         return getThreadPool().submit(callable);
     }
 
-
     /**
      * dcs获取线程池
      *

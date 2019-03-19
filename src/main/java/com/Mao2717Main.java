@@ -1,9 +1,9 @@
 package com;
 
 
+import com.okhttp.CallBackUtil;
+import com.okhttp.OkhttpUtil;
 import com.utils.ThreadPoolUtil;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.FileCallBack;
 import okhttp3.Call;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 public class Mao2717Main {
 
@@ -24,6 +26,8 @@ public class Mao2717Main {
         String url = BASE_URL + "/zt/maomi/1/";
 
         List<String> summaryList = getSummaryList(url);
+        summaryList = summaryList.subList(69, summaryList.size() - 1);
+        System.out.println("获取到 " + summaryList.size() + " 张图片");
         downloadImage("mao2717", summaryList);
     }
 
@@ -85,28 +89,24 @@ public class Mao2717Main {
             boolean mkdirs = file.mkdirs();
         }
 
-        for (String imgUrl : imageList) {
-            ThreadPoolUtil.execute(() -> {
+        if (imageList.size() <= 0) return;
 
-                String iconName = System.currentTimeMillis() + new Random().nextInt(100) + ".jpg";
-                OkHttpUtils.get() //
-                        .url(imgUrl) //
-                        .build() //
-                        .execute(new FileCallBack(file.getAbsolutePath(), iconName) //
-                        {
-                            @Override
-                            public void onError(Call call, Exception e, int i) {
-                            }
+        String imgUrl = imageList.get(0);
+        String iconName = System.currentTimeMillis() + new Random().nextInt(100) + ".jpg";
 
-                            @Override
-                            public void onResponse(File file1, int i) {
-                                System.out.println(file1.getAbsolutePath() + " 下载成功");
-                            }
-                        });
+        OkhttpUtil.okHttpDownloadFile(imgUrl, new CallBackUtil.CallBackFile(file.getAbsolutePath(), iconName) {
+            @Override
+            public void onFailure(Call call, Exception e) {
+            }
 
-            });
-
-        }
+            @Override
+            public void onResponse(File response) {
+                System.out.println(response.getAbsolutePath() + " 下载成功," + imageList.size());
+                imageList.remove(0);
+                downloadImage(filePath, imageList);
+            }
+        });
 
     }
+
 }

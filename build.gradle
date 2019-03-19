@@ -8,7 +8,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
 }
 
 tasks.withType(JavaCompile) {
@@ -17,7 +17,8 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.squareup.okhttp3:okhttp:3.3.1'
-    compile 'com.squareup.okio:okio:2.2.2'
+//    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+//    compile 'com.squareup.okio:okio:2.2.2'
     compile 'org.jsoup:jsoup:1.11.3'
+    compile 'com.lzy.net:okgo:3.0.4'
 }
