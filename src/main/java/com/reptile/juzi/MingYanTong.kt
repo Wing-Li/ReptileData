@@ -52,7 +52,7 @@ class MingYanTong {
             val viewsRow = viewContent.select("div.views-row")
             viewsRow?.forEach {
                 val content = it.select("div.views-field-phpcode-1").text()
-                val author = it.select("div.xqjulistwafo").text()
+//                val author = it.select("div.xqjulistwafo").text()
                 list.add(content)
             }
         } catch (e: IOException) {
