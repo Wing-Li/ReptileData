@@ -25,6 +25,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.lzy.net:okgo:3.0.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    api 'org.bouncycastle:bcprov-jdk15to18:1.68'
 }
 compileKotlin {
     kotlinOptions {
