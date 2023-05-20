@@ -17,7 +17,9 @@ public class Main {
 
             File[] movieList = file.listFiles();
             for (File m : movieList) {
-                if (m.isFile()) {
+                if (m.getAbsolutePath().lastIndexOf(".mp4") > 0
+                        || m.getAbsolutePath().lastIndexOf(".MOV") > 0
+                        || m.getAbsolutePath().lastIndexOf(".TS") > 0) {
                     moveFile(m.getAbsolutePath(), filePath + m.getName());
                 }
             }

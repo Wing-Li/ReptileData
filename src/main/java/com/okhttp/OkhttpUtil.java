@@ -1,6 +1,10 @@
 package com.okhttp;
 
+import okhttp3.*;
+
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +23,76 @@ public class OkhttpUtil {
     public static final String FILE_TYPE_AUDIO = "audio/*";
     public static final String FILE_TYPE_VIDEO = "video/*";
 
+
+    public static String postSync(String url,HashMap<String, String> headers,  HashMap<String, String> map) {
+        try {
+            Headers.Builder header = new Headers.Builder();
+            if (headers != null) {
+                for (String key : headers.keySet()) {
+                    header.add(key, headers.get(key));
+                }
+            }
+
+            FormBody.Builder formBody = new FormBody.Builder();
+            if (map != null) {
+                for (String key : map.keySet()) {
+                    formBody.add(key, map.get(key));
+                }
+            }
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .headers(header.build())
+                    .method(METHOD_POST, formBody.build())
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+
+            Call call = okHttpClient.newCall(request);
+            ResponseBody body = call.execute().body();
+
+            if (body != null) {
+                return body.string();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getSync(String url, HashMap<String, String> map) {
+        try {
+            url = setGetParams(url, map);
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+
+            Call call = okHttpClient.newCall(request);
+            ResponseBody body = call.execute().body();
+
+            if (body != null) {
+                return body.string();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * get请求，只有键值对参数
+     */
+    private static String setGetParams(String url, HashMap<String, String> map) {
+        if (map != null) {
+            url = url + "?";
+            for (String key : map.keySet()) {
+                url = url + key + "=" + map.get(key) + "&";
+            }
+            url = url.substring(0, url.length() - 1);
+        }
+        return url;
+    }
 
     /**
      * get请求
